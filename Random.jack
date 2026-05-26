@@ -1,0 +1,23 @@
+class Random{
+    field int value;
+
+    constructor Random new(){
+        let value = 0;
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+    
+    method int range(int seed, int a, int b){
+        var int raw;
+        let seed = seed - ((seed / 4096) * 4096);
+        if (seed < 0) { let seed = -seed; }
+        let raw = ((seed * 7) + 13);
+        if (raw < 0) { let raw = -raw; }
+        return a + (raw - ((raw / (b - a + 1)) * (b - a + 1)));
+    }
+
+}

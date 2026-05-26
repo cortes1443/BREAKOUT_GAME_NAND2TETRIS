@@ -1,5 +1,5 @@
 function BreakoutGame.new 3
-    push constant 17
+    push constant 21
     call Memory.alloc 1
     pop pointer 0
     call Screen.clearScreen 0
@@ -22,6 +22,17 @@ function BreakoutGame.new 3
     push constant 400
     push constant 0
     call Ball.setDestination 3
+    pop temp 0
+    call Random.new 0
+    pop this 18
+    push constant 0
+    push constant 0
+    push constant 0
+    call Modifier.new 3
+    pop this 20
+    push this 20
+    push constant 0
+    call Modifier.setOnScreen 2
     pop temp 0
     push constant 6
     pop this 5
@@ -266,6 +277,12 @@ function BreakoutGame.dispose 0
     push this 4
     call Array.dispose 1
     pop temp 0
+    push this 18
+    call Random.dispose 1
+    pop temp 0
+    push this 20
+    call Modifier.dispose 1
+    pop temp 0
     push pointer 0
     call Memory.deAlloc 1
     pop temp 0
@@ -302,6 +319,9 @@ label BreakoutGame_6
     pop temp 0
     push pointer 0
     call BreakoutGame.moveBall 1
+    pop temp 0
+    push pointer 0
+    call BreakoutGame.moveModifier 1
     pop temp 0
     push constant 50
     call Sys.wait 1
@@ -383,6 +403,9 @@ label BreakoutGame_16
     pop temp 0
     push pointer 0
     call BreakoutGame.moveBall 1
+    pop temp 0
+    push pointer 0
+    call BreakoutGame.moveModifier 1
     pop temp 0
     push constant 50
     call Sys.wait 1
@@ -717,7 +740,8 @@ label BreakoutGame_32
     call Ball.getTop 1
     push this 0
     call Ball.getBottom 1
-    call Brick.hit 5
+    push this 17
+    call Brick.hit 6
     pop local 0
     push local 0
     push constant 0
@@ -782,6 +806,43 @@ label BreakoutGame_38
     sub
     call Output.printInt 1
     pop temp 0
+    push this 15
+    push this 1
+    call Paddle.getLeft 1
+    add
+    push this 1
+    call Paddle.getRight 1
+    add
+    push this 0
+    call Ball.getLeft 1
+    add
+    push this 0
+    call Ball.getTop 1
+    add
+    push constant 11
+    call Math.multiply 2
+    pop this 17
+    push this 18
+    push this 17
+    push constant 1
+    push constant 3
+    call Random.range 4
+    pop this 19
+    push this 19
+    push constant 3
+    eq
+    not
+    if-goto BreakoutGame_41
+    push this 17
+    push this 0
+    call Ball.getLeft 1
+    push this 0
+    call Ball.getBottom 1
+    call Modifier.new 3
+    pop this 20
+    goto BreakoutGame_40
+label BreakoutGame_41
+label BreakoutGame_40
     goto BreakoutGame_36
 label BreakoutGame_37
 label BreakoutGame_36
@@ -812,12 +873,12 @@ label BreakoutGame_31
     not
     and
     not
-    if-goto BreakoutGame_41
+    if-goto BreakoutGame_43
     push this 13
     push constant 4
     eq
     not
-    if-goto BreakoutGame_43
+    if-goto BreakoutGame_45
     push this 1
     call Paddle.getLeft 1
     push this 0
@@ -832,24 +893,107 @@ label BreakoutGame_31
     pop this 16
     push this 16
     not
-    if-goto BreakoutGame_45
+    if-goto BreakoutGame_47
     push this 0
     call Ball.hide 1
     pop temp 0
+    goto BreakoutGame_46
+label BreakoutGame_47
+label BreakoutGame_46
     goto BreakoutGame_44
 label BreakoutGame_45
 label BreakoutGame_44
-    goto BreakoutGame_42
-label BreakoutGame_43
-label BreakoutGame_42
     push this 0
     push this 13
     call Ball.bounce 2
     pop temp 0
     push this 13
     pop this 14
-    goto BreakoutGame_40
-label BreakoutGame_41
-label BreakoutGame_40
+    goto BreakoutGame_42
+label BreakoutGame_43
+label BreakoutGame_42
+    push constant 0
+    return
+function BreakoutGame.moveModifier 1
+    push argument 0
+    pop pointer 0
+    push this 20
+    call Modifier.isOnScreen 1
+    pop local 0
+    push local 0
+    not
+    if-goto BreakoutGame_49
+    push this 20
+    call Modifier.hide 1
+    pop temp 0
+    push this 20
+    call Modifier.getY 1
+    push constant 255
+    push this 20
+    call Modifier.getSize 1
+    sub
+    push constant 1
+    sub
+    lt
+    not
+    if-goto BreakoutGame_51
+    push this 20
+    push this 20
+    call Modifier.getY 1
+    push constant 3
+    add
+    call Modifier.setY 2
+    pop temp 0
+    push this 20
+    call Modifier.draw 1
+    pop temp 0
+    push this 1
+    call Paddle.getLeft 1
+    push this 20
+    call Modifier.getX 1
+    push this 20
+    call Modifier.getSize 1
+    add
+    lt
+    push this 1
+    call Paddle.getRight 1
+    push this 20
+    call Modifier.getX 1
+    gt
+    and
+    push constant 255
+    push this 3
+    sub
+    push this 20
+    call Modifier.getY 1
+    push this 20
+    call Modifier.getSize 1
+    add
+    lt
+    and
+    not
+    if-goto BreakoutGame_53
+    push this 20
+    call Modifier.activate 1
+    pop temp 0
+    push this 20
+    call Modifier.hide 1
+    pop temp 0
+    goto BreakoutGame_52
+label BreakoutGame_53
+label BreakoutGame_52
+    goto BreakoutGame_50
+label BreakoutGame_51
+    push this 20
+    push constant 0
+    call Modifier.setOnScreen 2
+    pop temp 0
+    push this 20
+    call Modifier.hide 1
+    pop temp 0
+label BreakoutGame_50
+    goto BreakoutGame_48
+label BreakoutGame_49
+label BreakoutGame_48
     push constant 0
     return

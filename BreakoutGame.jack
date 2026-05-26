@@ -20,6 +20,12 @@ class BreakoutGame {
     field int lastWall;         // last wall the ball bounced from
     field int score;            // current game score
     field boolean exit;         // true when the game is over
+    field int seed;             // seed for random number generator
+    field Random random;        // generate pseudo random values
+    field int generateModifier; // flag to determine if a modifier should be generated
+    field Modifier modifier;     // modifier
+
+
 
     /* Constructs a new Breakout game. */
     constructor BreakoutGame new() {
@@ -34,6 +40,10 @@ class BreakoutGame {
 
         let ball = Ball.new(253, 240);
         do ball.setDestination(400, 0);
+
+        let random = Random.new();
+        let modifier = Modifier.new(0, 0, 0); // initialize modifier
+        do modifier.setOnScreen(false);
 
         let numXBricks = 6;
         let numYBricks = 5;
@@ -78,6 +88,8 @@ class BreakoutGame {
         do paddle.dispose();
         do ball.dispose();
         do bricks.dispose();
+        do random.dispose();
+        do modifier.dispose();
         do Memory.deAlloc(this);
         return;
     }
@@ -94,6 +106,7 @@ class BreakoutGame {
                 let key = Keyboard.keyPressed();
                 do paddle.move();
                 do moveBall();
+                do moveModifier();
                 do Sys.wait(50);
             }
 
@@ -113,6 +126,7 @@ class BreakoutGame {
                 let key = Keyboard.keyPressed();
                 do paddle.move();
                 do moveBall();
+                do moveModifier();
                 do Sys.wait(50);
             }
         }
@@ -187,7 +201,7 @@ class BreakoutGame {
             while ( j < numXBricks ) {
                 let brick = rowBricks[j];
                 if (~(brick.broken())) {
-                    let face = brick.hit(ball.getLeft(), ball.getRight(), ball.getTop(), ball.getBottom());
+                    let face = brick.hit(ball.getLeft(), ball.getRight(), ball.getTop(), ball.getBottom(), seed);
                     if (face > 0) {
                         do ball.bounce(face);
                         let wall = face;
@@ -202,6 +216,14 @@ class BreakoutGame {
                         do Output.printString("  ");
                         do Output.moveCursor(0,62);
                         do Output.printInt((numXBricks * numYBricks) - score);
+
+                        let seed = ((score + paddle.getLeft() + paddle.getRight() + ball.getLeft() + ball.getTop()) * 11);
+                        let generateModifier = random.range(seed, 1, 3);
+
+                        if (generateModifier = 3) {
+                            let modifier = Modifier.new(seed, ball.getLeft(), ball.getBottom()); //create modifier
+                        }
+
                     }
                 }
                 let j = j + 1;
@@ -219,7 +241,30 @@ class BreakoutGame {
             do ball.bounce(wall);
             let lastWall = wall;
         }
+        
 
+        return;
+    }
+
+    method void moveModifier(){
+        var boolean onScreen;
+        let onScreen = modifier.isOnScreen();
+        if(onScreen){
+            do modifier.hide();
+            
+            if((modifier.getY() < (255 -  modifier.getSize() - 1))){
+                do modifier.setY(modifier.getY() + 3);
+                do modifier.draw();
+                if((paddle.getLeft() < (modifier.getX() + modifier.getSize())) & (paddle.getRight() > modifier.getX()) & (((255 - paddleHeight) < (modifier.getY() + modifier.getSize())))){
+                    do modifier.activate();
+                    do modifier.hide();
+                }
+            }
+            else {
+                do modifier.setOnScreen(false);
+                do modifier.hide();
+            }
+        }
         return;
     }
 }

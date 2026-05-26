@@ -70,11 +70,11 @@ function Brick.broken 0
     pop pointer 0
     push this 5
     return
-function Brick.hit 1
+function Brick.hit 0
     push argument 0
     pop pointer 0
     push constant 0
-    pop local 0
+    pop this 4
     push argument 3
     push this 1
     push this 3
@@ -102,16 +102,16 @@ function Brick.hit 1
     neg
     pop this 5
     push constant 3
-    pop local 0
+    pop this 4
     goto Brick_0
 label Brick_1
 label Brick_0
     push argument 3
     push this 1
-    gt
+    lt
     push argument 4
     push this 1
-    lt
+    gt
     and
     push argument 1
     push this 0
@@ -125,10 +125,11 @@ label Brick_0
     and
     not
     if-goto Brick_3
-    push constant 0
+    push constant 1
+    neg
     pop this 5
     push constant 4
-    pop local 0
+    pop this 4
     goto Brick_2
 label Brick_3
 label Brick_2
@@ -155,7 +156,7 @@ label Brick_2
     neg
     pop this 5
     push constant 1
-    pop local 0
+    pop this 4
     goto Brick_4
 label Brick_5
 label Brick_4
@@ -186,7 +187,7 @@ label Brick_4
     neg
     pop this 5
     push constant 2
-    pop local 0
+    pop this 4
     goto Brick_6
 label Brick_7
 label Brick_6
@@ -215,7 +216,7 @@ label Brick_6
     neg
     pop this 5
     push constant 5
-    pop local 0
+    pop this 4
     goto Brick_8
 label Brick_9
 label Brick_8
@@ -228,5 +229,5 @@ label Brick_8
     goto Brick_10
 label Brick_11
 label Brick_10
-    push local 0
+    push this 4
     return

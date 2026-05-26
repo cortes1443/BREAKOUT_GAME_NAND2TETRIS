@@ -1,0 +1,91 @@
+class Modifier{
+    field int type;     // 0=ninguno, 1-6 tipo de modificador
+    field int x, y;     
+    field int size;     
+    field int timer;    // contador de frames hasta que expira el efecto
+    field boolean active; // true si el comodin fue capturado y esta activo
+    field boolean onScreen; // true si todavia esta cayendo en pantalla
+    field Random random;
+
+    constructor Modifier new(int seed, int xBloqueRoto, int yBloqueRoto){
+        let random = Random.new();
+        let type = random.range(seed, 1, 6);
+        let x = xBloqueRoto;
+        let y = yBloqueRoto;
+        let size = 10;
+        let timer = 300;
+        let active = false;
+        let onScreen = true;
+
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void draw(){
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x, y, x+size, y+size);
+        let onScreen = true;
+        return;
+    }
+
+    method void hide(){
+        do Screen.setColor(false);
+        do Screen.drawRectangle(x, y, x+size, y+size);
+        return;
+    }
+
+    method void setOnScreen(boolean value){
+        let onScreen = value;
+        return;
+    }
+
+    method void tickTimer(){
+        if(~(timer = 0)){
+            let timer = timer-1;
+        } else{
+            let onScreen = false;
+            let active = false;
+            do hide();
+        }
+        return;
+    }
+
+    method int getType(){
+        return type;
+    }
+
+    method int getSize(){
+        return size;
+    }
+
+    method int getX(){
+        return x;
+    }
+
+    method int getY(){
+        return y;
+    }
+
+    method void setY(int newY){
+        let y = newY;
+        return;
+    }
+
+    method void activate(){
+        let active = true;
+        let onScreen = false;
+        return;
+    }
+
+    method boolean isActive(){
+        return active;
+    }
+
+    method boolean isOnScreen(){
+        return onScreen;
+    }
+}

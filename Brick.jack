@@ -50,9 +50,10 @@ class Brick {
         return broken;
     }
 
+
     /** Determine's if brick has been hit */
-    method int hit(int ballLeft, int ballRight, int ballTop, int ballBottom) {
-        var int face;
+    method int hit(int ballLeft, int ballRight, int ballTop, int ballBottom, int seed) {
+ 
         let face = 0;
 
         // Bottom edge
@@ -61,8 +62,8 @@ class Brick {
             let face = 3;
         }
         // Top edge
-        if ((((ballTop > y) & (ballBottom < y)) & ((ballLeft < (x + width)) & (ballRight > x)))) {
-            let broken = false;
+        if ((((ballTop < y) & (ballBottom > y)) & ((ballLeft < (x + width)) & (ballRight > x)))) {
+            let broken = true;
             let face = 4;
         }
         // Left edge

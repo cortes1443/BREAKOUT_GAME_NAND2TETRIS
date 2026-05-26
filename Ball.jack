@@ -8,7 +8,7 @@ class Ball {
     field int x, y;     // Location (in pixels)
     field int size;     // Ball size
     field int speed;    // Ball speed
-    field int wall;     // Last wall ball bounced from
+    field int dwall;     // Last wall ball bounced from
                         // (0 = None, 1 = Left, 2 = Right, 3 = Top, 4 = Bottom)
     field int destx, desty, prevDestx, prevDesty; // Next and previous trajectory destinations
     field int dx, dy;   // Difference between dests and prev dests
@@ -21,7 +21,7 @@ class Ball {
         let speed = 3;
         let prevDestx = Ax;
         let prevDesty = Ay;
-        let wall = 0;
+        let dwall = 0;
         do show();
         return this;
     }
