@@ -6,6 +6,8 @@
 class Ball {
 
     field int x, y;     // Location (in pixels)
+    field Array pos; // avoid allocating the whole heap for each new computed pos
+
     field int size;     // Ball size
     field int speed;    // Ball speed
     field int dwall;     // Last wall ball bounced from
@@ -22,12 +24,14 @@ class Ball {
         let prevDestx = Ax;
         let prevDesty = Ay;
         let dwall = 0;
+        let pos = Array.new(2);
         do show();
         return this;
     }
 
     /** Deallocates the ball's memory. */
     method void dispose() {
+        do pos.dispose();
         do Memory.deAlloc(this);
         return;
     }
@@ -91,6 +95,11 @@ class Ball {
         return;
     }
 
+    method void setPrevDestX(int AprevDestX) {
+        let prevDestx = AprevDestX;
+        return;
+    }
+
     method void setY(int Ay) {
         let y = Ay;
         return;
@@ -106,14 +115,16 @@ class Ball {
         return speed;
     }
 
+    method void fixWallDX(int Adx) {
+        let dx = Adx;
+        return;
+    }
+
     /**
      * Moves the ball one step towards its destination.
      */
      method Array move() {
         var int absdx, absdy;
-        var Array pos;
-
-        let pos = Array.new(2);
 
         let absdx = Math.abs(dx);
         let absdy = Math.abs(dy);
@@ -165,15 +176,30 @@ class Ball {
         return pos;
      }
 
+     method int getDY() {
+        return dy;
+     }
+
+    method int getDX() {
+        return dx;
+    }
+
+    method void forceDYDown() {
+        if (dy < 0) {
+            let dy = -dy;
+        }
+        return ;
+    }
+
      method void bounce(int wall) {
 
-        if ((wall = 1) | (wall = 2)) {
+        if ((wall = 1) | (wall = 2)) { // left and right collision
             let desty = 2 * y - prevDesty;
             let prevDesty = y;
             let destx = prevDestx;
             let prevDestx = x;
         }
-        if ((wall = 3) | (wall = 4)) {
+        if ((wall = 3) | (wall = 4)) { // top and bottom collision
             let destx = 2 * x - prevDestx;
             let prevDestx = x;
             let desty = prevDesty;

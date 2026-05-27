@@ -9,11 +9,11 @@ class Modifier{
 
     constructor Modifier new(int seed, int xBloqueRoto, int yBloqueRoto){
         let random = Random.new();
-        let type = random.range(seed, 1, 6);
+        let type = 6;// DEBUG random.range(seed, 1, 6);
         let x = xBloqueRoto;
         let y = yBloqueRoto;
         let size = 3;
-        let timer = 300;
+        let timer = 150; // DEBUG 300
         let active = false;
         let onScreen = true;
 
@@ -21,7 +21,13 @@ class Modifier{
     }
 
     method void dispose() {
+        do random.dispose();
         do Memory.deAlloc(this);
+        return;
+    }
+
+    method void deactivate() {
+        let active = false;
         return;
     }
 

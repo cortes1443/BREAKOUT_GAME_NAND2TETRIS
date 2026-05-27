@@ -7,6 +7,7 @@ class BreakoutGame {
     field Paddle paddle;        // paddle
     field int paddleWidth;      // width of paddle
     field int paddleHeight;      // height of paddle
+    field int paddleSpeed;       // speed of the paddle
     field Array bricks;          // bricks
     field int numXBricks;        // num hoirzontal bricks
     field int numYBricks;        // num vertical bricks
@@ -19,13 +20,22 @@ class BreakoutGame {
     field int wall;             // current wall the ball is bouncing off
     field int lastWall;         // last wall the ball bounced from
     field int score;            // current game score
+
     field boolean exit;         // true when the game is over
+    field boolean isKeyEsc;     // true if game is over because user pressed Esc
+
     field int seed;             // seed for random number generator
     field Random random;        // generate pseudo random values
     field int generateModifier; // flag to determine if a modifier should be generated
     field Modifier modifier;     // modifier
     field boolean switchKeys;    // true si los controles estan invertidos (type 3)
     field boolean piercing;      // true si la pelota es perforadora (type 6)
+
+    // Bugfix abc935kf: Output.printString("  ") creates a temporary string "   " but its never freed
+    field String twoSpaces;
+
+    // Bugfix o646i349o6h: count at most 2 blocks of piercing
+    field int piercingHits;
 
 
 
@@ -38,7 +48,8 @@ class BreakoutGame {
 
         let paddleWidth = 40;  // initial paddle size
         let paddleHeight = 7;  // paddle height
-        let paddle = Paddle.new(230, 248, paddleWidth, paddleHeight);
+        let paddleSpeed = 7;
+        let paddle = Paddle.new(230, 248, paddleWidth, paddleHeight, paddleSpeed);
 
         let ball = Ball.new(253, 240);
         do ball.setDestination(400, 0);
@@ -75,6 +86,7 @@ class BreakoutGame {
         let lastWall = 0;
         let score = 0;
         let exit = false;
+        let isKeyEsc = false;
 
         do Output.moveCursor(0,0);
         do Output.printString("Score: 0");
@@ -84,7 +96,17 @@ class BreakoutGame {
         do Output.printString("Bricks remaining: ");
         do Output.printInt((numXBricks * numYBricks));
 
+        // --------------- Bugfix abc935kf ---------------
+        let twoSpaces = String.new(2);
+        do twoSpaces.appendChar(32);
+        do twoSpaces.appendChar(32);
+        // ----------------------------------------
+
         return this;
+
+        // ---------------- Bugfix o646i349o6h -------------
+        let piercingHits = 0;
+        // -------------------------------------------------
     }
 
     /** Deallocates the object's memory. */
@@ -94,6 +116,9 @@ class BreakoutGame {
         do bricks.dispose();
         do random.dispose();
         do modifier.dispose();
+        // --------------- Bugfix abc935kf ---------------
+        do twoSpaces.dispose();
+        // -----------------------------------------------
         do Memory.deAlloc(this);
         return;
     }
@@ -111,28 +136,38 @@ class BreakoutGame {
                 do paddle.move();
                 do moveBall();
                 do moveModifier();
-                do Sys.wait(50);
+                do Sys.wait(10); // DEBUG: original was 30
             }
 
             if (switchKeys) {
-                if (key = 130) { do paddle.setDirection(2); }
+                // <- A, a => move to the right (because switchKeys modifier would be toggled)
+                if ((key = 130) | (key = 65) | (key = 97)) { do paddle.setDirection(2); }
                 else {
-                    if (key = 132) { do paddle.setDirection(1); }
+                    // Same logic, and ->, D, d => moves to the left
+                    if ((key = 132) | (key = 68) | (key = 100)) { do paddle.setDirection(1); }
                     else {
                         if ((key = 131) | (key = 133)) { do paddle.setDirection(0); }
                         else {
-                            if (key = 140) { let exit = true; }
+                            if (key = 140) {
+                                let exit = true;
+                                let isKeyEsc = true;
+                            }
                         }
                     }
                 }
             } else {
-                if (key = 130) { do paddle.setDirection(1); }
+                // <- A, a => move to the left
+                if ((key = 130) | (key = 65) | (key = 97)) { do paddle.setDirection(1); }
                 else {
-                    if (key = 132) { do paddle.setDirection(2); }
+                    // ->, D, d => move to the right
+                    if ((key = 132) | (key = 68) | (key = 100)) { do paddle.setDirection(2); }
                     else {
                         if ((key = 131) | (key = 133)) { do paddle.setDirection(0); }
                         else {
-                            if (key = 140) { let exit = true; }
+                            if (key = 140) {
+                                let exit = true;
+                                let isKeyEsc = true;
+                            }
                         }
                     }
                 }
@@ -149,13 +184,20 @@ class BreakoutGame {
         }
 
         if (exit) {
-            do Output.moveCursor(11,27);
-            do Output.printString("Game Over!");
-            do Output.moveCursor(13,25);
-            do Output.printString("Final Score: ");
-            do Output.moveCursor(13,38);
-            do Output.printInt(score);
-            do Sys.wait(2000);
+            do ball.hide();
+            if (isKeyEsc) {
+                do Screen.setColor(true);
+                do Screen.drawRectangle(0, 0, 511, 255);
+                do Sys.halt();
+            } else {
+                do Output.moveCursor(11,27);
+                do Output.printString("Game Over!");
+                do Output.moveCursor(13,25);
+                do Output.printString("Final Score: ");
+                do Output.moveCursor(13,38);
+                do Output.printInt(score);
+                do Sys.wait(2000);
+            }
         }
 
         if ( score = (numXBricks * numYBricks) ) {
@@ -177,7 +219,7 @@ class BreakoutGame {
       * End the game if the ball misses the paddle.
       */
     method void moveBall() {
-        var int face;
+        var int face; // collision face, left = 0 | right = 1 | top = 2 | bottom = 3
         var Array pos;
         var int x, y;
         var int i, j;
@@ -191,70 +233,7 @@ class BreakoutGame {
         let x = pos[0];
         let y = pos[1];
 
-        if (~(x > leftWall)) {
-            let wall = 1;
-            let x = leftWall;
-            do ball.setX(x);
-        }
-        if (~(x < rightWall)) {
-            let wall = 2;
-            let x = rightWall;
-            do ball.setX(x);
-        }
-        if (~(y > topWall)) {
-            let wall = 3;
-            let y = topWall;
-            do ball.setY(y);
-        }
-        if (~(y < bottomWall)) {
-            let wall = 4;
-            let y = bottomWall;
-            do ball.setY(y);
-        }
-
-        let i = 0;
-        while ( i < numYBricks ) {
-            let rowBricks = bricks[i];
-            let j = 0;
-            while ( j < numXBricks ) {
-                let brick = rowBricks[j];
-                if (~(brick.broken())) {
-                    let face = brick.hit(ball.getLeft(), ball.getRight(), ball.getTop(), ball.getBottom(), seed);
-                    if (face > 0) {
-                        do ball.bounce(face);
-                        let wall = face;
-                        let lastWall = face;
-                        let score = score + 1;
-                        if ((score = 5) | (score = 10)) {
-                            do ball.increaseSpeed(1);
-                        }
-                        do Output.moveCursor(0, 7);
-                        do Output.printInt(score);
-                        do Output.moveCursor(0,62);
-                        do Output.printString("  ");
-                        do Output.moveCursor(0,62);
-                        do Output.printInt((numXBricks * numYBricks) - score);
-
-                        let seed = ((score + paddle.getLeft() + paddle.getRight() + ball.getLeft() + ball.getTop()) * 11);
-                        let generateModifier = random.range(seed, 1, 3);
-
-                        if (generateModifier = 3) {
-                            if (modifier.isActive()) {
-                                do revertModifier();
-                            }
-                            do modifier.dispose();
-                            let modifier = Modifier.new(seed, ball.getLeft(), ball.getBottom());
-                        }
-
-                    }
-                }
-                let j = j + 1;
-            }
-            let i = i + 1;
-        }
-
-        do ball.show();
-
+        // check paddle collision right away
         if ((wall > 0) & (~(wall = lastWall))) {
             if (wall = 4) {
                 let exit = ((paddle.getLeft() > ball.getRight()) | (paddle.getRight() < ball.getLeft()));
@@ -263,8 +242,108 @@ class BreakoutGame {
             do ball.bounce(wall);
             let lastWall = wall;
         }
-        
 
+        // iterate through all bricks
+        let i = 0;
+        while ( i < numYBricks ) {
+            let rowBricks = bricks[i];
+            let j = 0;
+            while ( j < numXBricks ) {
+                let brick = rowBricks[j];
+
+                // Only check active bricks
+                if (~(brick.broken())) {
+                    let face = brick.listen(ball.getLeft(), ball.getRight(), ball.getTop(), ball.getBottom(), seed);
+                    do brick.show(); // draw the brick again in case of offset with the ball
+                    if (face > 0) {
+                        // break brick only if it hasn't been pierced and ball is moving upwards (dy < 0 means upwards)
+                        if ((piercingHits < 2) & (ball.getDY() < 0)) {
+                            do brick.breakBrick();
+                            let score = score + 1;
+                        }
+
+                        if ((~piercing) | (piercingHits > 0)) {
+                            do ball.bounce(face);
+
+                            if ((face = 1) | (face = 2)) {
+                                do ball.forceDYDown();
+                            }
+
+                            if (piercing) {
+                                do modifier.deactivate(); // (Bugfix o646i349o6h) deactivate piercing modifier outside of timer
+                                do revertModifier();
+                            }
+                        } else {
+                            let piercingHits = piercingHits + 1;
+                        }
+                        let wall = face;
+                        let lastWall = face;
+                        /* what the hell is this?
+                        if ((score = 5) | (score = 10)) {
+                            do ball.increaseSpeed(1);
+                        }
+                        */
+                        do Output.moveCursor(0, 7);
+                        do Output.printInt(score);
+                        do Output.moveCursor(0,62);
+                        // do Output.printString("  ");
+                        // --------------- Bugfix abc935kf ---------------
+                        do Output.printString(twoSpaces);
+                        // ----------------------------------------
+
+                        do Output.moveCursor(0,62);
+                        do Output.printInt((numXBricks * numYBricks) - score);
+
+                        let seed = ((score + paddle.getLeft() + paddle.getRight() + ball.getLeft() + ball.getTop()) * 11);
+                        let generateModifier = 3; //  random.range(seed, 1, 3); // 1/3 of prob to generate a modifier DEBUG
+                        
+                        /* Bugfix id kgh54o0h5: ONLY ONE MODIFIER AT THE TIME
+                        if (generateModifier = 3) {
+                            if (modifier.isActive()) {
+                                do revertModifier();
+                            }
+                            do modifier.dispose();
+                            let modifier = Modifier.new(seed, ball.getLeft(), ball.getBottom());
+                        }
+                        */
+                        // FIXED:
+                        if (generateModifier = 3) {
+                            if (~modifier.isActive() & ~modifier.isOnScreen()) {
+                                do modifier.dispose();
+                                let modifier = Modifier.new(seed, ball.getLeft(), ball.getBottom());
+                            }
+                        }
+
+                    }
+                }
+                let j = j + 1;
+            }
+            let i = i + 1;
+        } 
+    
+        // lastly, check the borders
+        if (~(x > leftWall)) { // avoid ball from clipping with left wall
+            let wall = 1;
+            let x = leftWall;
+            do ball.setX(x);
+        }
+        if (~(x < rightWall)) { // avoid ball from clipping with right wall
+            let wall = 2;
+            let x = rightWall;
+            do ball.setX(x);
+        }
+        if (~(y > topWall)) { // avoid ball from clipping with top wall
+            let wall = 3;
+            let y = topWall;
+            do ball.setY(y);
+        }
+        if (~(y < bottomWall)) { // avoid ball from clipping with bottom 
+            let wall = 4;
+            let y = bottomWall;
+            do ball.setY(y);
+        }
+
+        do ball.show();
         return;
     }
 
@@ -272,11 +351,11 @@ class BreakoutGame {
         var int t;
         let t = modifier.getType();
         if (t = 1) { do paddle.setWidth(paddle.getWidth() / 2); }
-        if (t = 2) { do ball.increaseSpeed(3); }
+        if (t = 2) { do ball.increaseSpeed(2); }
         if (t = 3) { let switchKeys = true; }
         if (t = 4) { do paddle.setWidth(paddle.getWidth() * 2); }
         if (t = 5) { do ball.increaseSpeed(-2); }
-        if (t = 6) { let piercing = true; }
+        if (t = 6) { let piercing = true; let piercingHits = 0; }
         return;
     }
 
@@ -284,11 +363,11 @@ class BreakoutGame {
         var int t;
         let t = modifier.getType();
         if (t = 1) { do paddle.setWidth(paddle.getWidth() * 2); }
-        if (t = 2) { do ball.increaseSpeed(-3); }
+        if (t = 2) { do ball.increaseSpeed(-2); }
         if (t = 3) { let switchKeys = false; }
         if (t = 4) { do paddle.setWidth(paddle.getWidth() / 2); }
         if (t = 5) { do ball.increaseSpeed(2); }
-        if (t = 6) { let piercing = false; }
+        if (t = 6) { let piercing = false; let piercingHits = 0; }
         return;
     }
 
@@ -315,9 +394,12 @@ class BreakoutGame {
         }
 
         if (modifier.isActive()) {
-            do modifier.tickTimer();
-            if (modifier.getTimer() = 0) {
-                do revertModifier();
+            if (~(modifier.getType() = 6)) { // (Bugfix o646i349o6h) timer bypasses percing modifier since doesn't depend on time but rather 2 hits on bricks
+                do modifier.tickTimer();
+                if (modifier.getTimer() = 0) {
+                    do modifier.deactivate();
+                    do revertModifier();
+                }
             }
         }
         return;

@@ -50,41 +50,40 @@ class Brick {
         return broken;
     }
 
-
-    /** Determine's if brick has been hit */
-    method int hit(int ballLeft, int ballRight, int ballTop, int ballBottom, int seed) {
+    /** Determine's if brick is touching the ball */
+    method int listen(int ballLeft, int ballRight, int ballTop, int ballBottom, int seed) {
  
         let face = 0;
 
         // Bottom edge
         if ((((ballTop < (y + height)) & (ballBottom > (y + height))) & ((ballLeft < (x + width)) & (ballRight > x)))) {
-            let broken = true;
             let face = 3;
         }
         // Top edge
         if ((((ballTop < y) & (ballBottom > y)) & ((ballLeft < (x + width)) & (ballRight > x)))) {
-            let broken = true;
             let face = 4;
         }
         // Left edge
         if ((((ballTop < (y + height)) & (ballBottom > y)) & ((ballLeft < x) & (ballRight > x)))) {
-            let broken = true;
             let face = 1;
         }
         // Right edge
         if ((((ballTop < (y + height)) & (ballBottom > y)) & ((ballLeft < (x + width)) & (ballRight > (x + width))))) {
-            let broken = true;
             let face = 2;
         }
         // Inside!
         if ((ballTop > y) & (ballBottom < (y + height)) & (ballLeft > x) & (ballRight < (x + width))) {
-            let broken = true;
             let face = 5;
         }
+        return face;
+    }
 
+    // break a brick
+    method void breakBrick() {
+        let broken = true;
         if (broken) {
             do hide();
         }
-        return face;
+        return;
     }
 }
