@@ -19,12 +19,10 @@ class Random {
     }
 
     method int next() {
-        // LCG: multiplier=214013, increment=2531011, but adapted for 16-bit Jack
-        // Usamos valores más pequeños que no desborden
-        let value = (value * 31) + 997;
-        // Mantener positivo y acotado
-        if (value < 0) { let value = -(value); }
-        let value = value - ((value / 32767) * 32767);
+        // Lehmer LCG: multiplier=75, mod=32767 (Park-Miller)
+        // Full period of 32766, excellent distribution for 16-bit
+        let value = (value * 75) - ((value * 75 / 32767) * 32767);
+        if (value < 0) { let value = -value; }
         if (value = 0) { let value = 1; }
         return value;
     }
