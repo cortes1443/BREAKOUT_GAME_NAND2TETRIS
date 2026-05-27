@@ -62,6 +62,24 @@
         return x + width;
     }
 
+    /** Gets the paddle's top edge. */
+    method int getTop() {
+        return y;
+    }
+
+    /** Gets the paddle's width. */
+    method int getWidth() {
+        return width;
+    }
+
+    /** Sets the paddle's width, redrawing it. */
+    method void setWidth(int newWidth) {
+        do hide();
+        let width = newWidth;
+        do show();
+        return;
+    }
+
     /** Moves the paddle one step in the paddle's direction. */
     method void move() {
         if (direction = 1) {

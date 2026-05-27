@@ -1,5 +1,5 @@
 function BreakoutGame.new 3
-    push constant 21
+    push constant 23
     call Memory.alloc 1
     pop pointer 0
     call Screen.clearScreen 0
@@ -34,6 +34,10 @@ function BreakoutGame.new 3
     push constant 0
     call Modifier.setOnScreen 2
     pop temp 0
+    push constant 0
+    pop this 21
+    push constant 0
+    pop this 22
     push constant 6
     pop this 5
     push constant 5
@@ -328,19 +332,11 @@ label BreakoutGame_6
     pop temp 0
     goto BreakoutGame_6
 label BreakoutGame_7
-    push local 0
-    push constant 130
-    eq
+    push this 21
     not
     if-goto BreakoutGame_9
-    push this 1
-    push constant 1
-    call Paddle.setDirection 2
-    pop temp 0
-    goto BreakoutGame_8
-label BreakoutGame_9
     push local 0
-    push constant 132
+    push constant 130
     eq
     not
     if-goto BreakoutGame_11
@@ -351,6 +347,17 @@ label BreakoutGame_9
     goto BreakoutGame_10
 label BreakoutGame_11
     push local 0
+    push constant 132
+    eq
+    not
+    if-goto BreakoutGame_13
+    push this 1
+    push constant 1
+    call Paddle.setDirection 2
+    pop temp 0
+    goto BreakoutGame_12
+label BreakoutGame_13
+    push local 0
     push constant 131
     eq
     push local 0
@@ -358,28 +365,82 @@ label BreakoutGame_11
     eq
     or
     not
-    if-goto BreakoutGame_13
+    if-goto BreakoutGame_15
     push this 1
     push constant 0
     call Paddle.setDirection 2
     pop temp 0
-    goto BreakoutGame_12
-label BreakoutGame_13
+    goto BreakoutGame_14
+label BreakoutGame_15
     push local 0
     push constant 140
     eq
     not
-    if-goto BreakoutGame_15
+    if-goto BreakoutGame_17
     push constant 1
     neg
     pop this 16
-    goto BreakoutGame_14
-label BreakoutGame_15
+    goto BreakoutGame_16
+label BreakoutGame_17
+label BreakoutGame_16
 label BreakoutGame_14
 label BreakoutGame_12
 label BreakoutGame_10
+    goto BreakoutGame_8
+label BreakoutGame_9
+    push local 0
+    push constant 130
+    eq
+    not
+    if-goto BreakoutGame_19
+    push this 1
+    push constant 1
+    call Paddle.setDirection 2
+    pop temp 0
+    goto BreakoutGame_18
+label BreakoutGame_19
+    push local 0
+    push constant 132
+    eq
+    not
+    if-goto BreakoutGame_21
+    push this 1
+    push constant 2
+    call Paddle.setDirection 2
+    pop temp 0
+    goto BreakoutGame_20
+label BreakoutGame_21
+    push local 0
+    push constant 131
+    eq
+    push local 0
+    push constant 133
+    eq
+    or
+    not
+    if-goto BreakoutGame_23
+    push this 1
+    push constant 0
+    call Paddle.setDirection 2
+    pop temp 0
+    goto BreakoutGame_22
+label BreakoutGame_23
+    push local 0
+    push constant 140
+    eq
+    not
+    if-goto BreakoutGame_25
+    push constant 1
+    neg
+    pop this 16
+    goto BreakoutGame_24
+label BreakoutGame_25
+label BreakoutGame_24
+label BreakoutGame_22
+label BreakoutGame_20
+label BreakoutGame_18
 label BreakoutGame_8
-label BreakoutGame_16
+label BreakoutGame_26
     push local 0
     push constant 0
     eq
@@ -395,7 +456,7 @@ label BreakoutGame_16
     not
     and
     not
-    if-goto BreakoutGame_17
+    if-goto BreakoutGame_27
     call Keyboard.keyPressed 0
     pop local 0
     push this 1
@@ -410,13 +471,13 @@ label BreakoutGame_16
     push constant 50
     call Sys.wait 1
     pop temp 0
-    goto BreakoutGame_16
-label BreakoutGame_17
+    goto BreakoutGame_26
+label BreakoutGame_27
     goto BreakoutGame_4
 label BreakoutGame_5
     push this 16
     not
-    if-goto BreakoutGame_19
+    if-goto BreakoutGame_29
     push constant 11
     push constant 27
     call Output.moveCursor 2
@@ -489,16 +550,16 @@ label BreakoutGame_5
     push constant 2000
     call Sys.wait 1
     pop temp 0
-    goto BreakoutGame_18
-label BreakoutGame_19
-label BreakoutGame_18
+    goto BreakoutGame_28
+label BreakoutGame_29
+label BreakoutGame_28
     push this 15
     push this 5
     push this 6
     call Math.multiply 2
     eq
     not
-    if-goto BreakoutGame_21
+    if-goto BreakoutGame_31
     push constant 11
     push constant 25
     call Output.moveCursor 2
@@ -607,9 +668,9 @@ label BreakoutGame_18
     push constant 500
     call Sys.wait 1
     pop temp 0
-    goto BreakoutGame_20
-label BreakoutGame_21
-label BreakoutGame_20
+    goto BreakoutGame_30
+label BreakoutGame_31
+label BreakoutGame_30
     push constant 0
     return
 function BreakoutGame.moveBall 8
@@ -638,7 +699,7 @@ function BreakoutGame.moveBall 8
     gt
     not
     not
-    if-goto BreakoutGame_23
+    if-goto BreakoutGame_33
     push constant 1
     pop this 13
     push this 9
@@ -647,15 +708,15 @@ function BreakoutGame.moveBall 8
     push local 2
     call Ball.setX 2
     pop temp 0
-    goto BreakoutGame_22
-label BreakoutGame_23
-label BreakoutGame_22
+    goto BreakoutGame_32
+label BreakoutGame_33
+label BreakoutGame_32
     push local 2
     push this 10
     lt
     not
     not
-    if-goto BreakoutGame_25
+    if-goto BreakoutGame_35
     push constant 2
     pop this 13
     push this 10
@@ -664,15 +725,15 @@ label BreakoutGame_22
     push local 2
     call Ball.setX 2
     pop temp 0
-    goto BreakoutGame_24
-label BreakoutGame_25
-label BreakoutGame_24
+    goto BreakoutGame_34
+label BreakoutGame_35
+label BreakoutGame_34
     push local 3
     push this 11
     gt
     not
     not
-    if-goto BreakoutGame_27
+    if-goto BreakoutGame_37
     push constant 3
     pop this 13
     push this 11
@@ -681,15 +742,15 @@ label BreakoutGame_24
     push local 3
     call Ball.setY 2
     pop temp 0
-    goto BreakoutGame_26
-label BreakoutGame_27
-label BreakoutGame_26
+    goto BreakoutGame_36
+label BreakoutGame_37
+label BreakoutGame_36
     push local 3
     push this 12
     lt
     not
     not
-    if-goto BreakoutGame_29
+    if-goto BreakoutGame_39
     push constant 4
     pop this 13
     push this 12
@@ -698,17 +759,17 @@ label BreakoutGame_26
     push local 3
     call Ball.setY 2
     pop temp 0
-    goto BreakoutGame_28
-label BreakoutGame_29
-label BreakoutGame_28
+    goto BreakoutGame_38
+label BreakoutGame_39
+label BreakoutGame_38
     push constant 0
     pop local 4
-label BreakoutGame_30
+label BreakoutGame_40
     push local 4
     push this 6
     lt
     not
-    if-goto BreakoutGame_31
+    if-goto BreakoutGame_41
     push local 4
     push this 4
     add
@@ -717,12 +778,12 @@ label BreakoutGame_30
     pop local 6
     push constant 0
     pop local 5
-label BreakoutGame_32
+label BreakoutGame_42
     push local 5
     push this 5
     lt
     not
-    if-goto BreakoutGame_33
+    if-goto BreakoutGame_43
     push local 5
     push local 6
     add
@@ -733,7 +794,7 @@ label BreakoutGame_32
     call Brick.broken 1
     not
     not
-    if-goto BreakoutGame_35
+    if-goto BreakoutGame_45
     push local 7
     push this 0
     call Ball.getLeft 1
@@ -750,7 +811,7 @@ label BreakoutGame_32
     push constant 0
     gt
     not
-    if-goto BreakoutGame_37
+    if-goto BreakoutGame_47
     push this 0
     push local 0
     call Ball.bounce 2
@@ -771,14 +832,14 @@ label BreakoutGame_32
     eq
     or
     not
-    if-goto BreakoutGame_39
+    if-goto BreakoutGame_49
     push this 0
     push constant 1
     call Ball.increaseSpeed 2
     pop temp 0
-    goto BreakoutGame_38
-label BreakoutGame_39
-label BreakoutGame_38
+    goto BreakoutGame_48
+label BreakoutGame_49
+label BreakoutGame_48
     push constant 0
     push constant 7
     call Output.moveCursor 2
@@ -835,7 +896,20 @@ label BreakoutGame_38
     push constant 3
     eq
     not
-    if-goto BreakoutGame_41
+    if-goto BreakoutGame_51
+    push this 20
+    call Modifier.isActive 1
+    not
+    if-goto BreakoutGame_53
+    push pointer 0
+    call BreakoutGame.revertModifier 1
+    pop temp 0
+    goto BreakoutGame_52
+label BreakoutGame_53
+label BreakoutGame_52
+    push this 20
+    call Modifier.dispose 1
+    pop temp 0
     push this 17
     push this 0
     call Ball.getLeft 1
@@ -843,27 +917,27 @@ label BreakoutGame_38
     call Ball.getBottom 1
     call Modifier.new 3
     pop this 20
-    goto BreakoutGame_40
-label BreakoutGame_41
-label BreakoutGame_40
-    goto BreakoutGame_36
-label BreakoutGame_37
-label BreakoutGame_36
-    goto BreakoutGame_34
-label BreakoutGame_35
-label BreakoutGame_34
+    goto BreakoutGame_50
+label BreakoutGame_51
+label BreakoutGame_50
+    goto BreakoutGame_46
+label BreakoutGame_47
+label BreakoutGame_46
+    goto BreakoutGame_44
+label BreakoutGame_45
+label BreakoutGame_44
     push local 5
     push constant 1
     add
     pop local 5
-    goto BreakoutGame_32
-label BreakoutGame_33
+    goto BreakoutGame_42
+label BreakoutGame_43
     push local 4
     push constant 1
     add
     pop local 4
-    goto BreakoutGame_30
-label BreakoutGame_31
+    goto BreakoutGame_40
+label BreakoutGame_41
     push this 0
     call Ball.show 1
     pop temp 0
@@ -876,12 +950,12 @@ label BreakoutGame_31
     not
     and
     not
-    if-goto BreakoutGame_43
+    if-goto BreakoutGame_55
     push this 13
     push constant 4
     eq
     not
-    if-goto BreakoutGame_45
+    if-goto BreakoutGame_57
     push this 1
     call Paddle.getLeft 1
     push this 0
@@ -896,25 +970,193 @@ label BreakoutGame_31
     pop this 16
     push this 16
     not
-    if-goto BreakoutGame_47
+    if-goto BreakoutGame_59
     push this 0
     call Ball.hide 1
     pop temp 0
-    goto BreakoutGame_46
-label BreakoutGame_47
-label BreakoutGame_46
-    goto BreakoutGame_44
-label BreakoutGame_45
-label BreakoutGame_44
+    goto BreakoutGame_58
+label BreakoutGame_59
+label BreakoutGame_58
+    goto BreakoutGame_56
+label BreakoutGame_57
+label BreakoutGame_56
     push this 0
     push this 13
     call Ball.bounce 2
     pop temp 0
     push this 13
     pop this 14
-    goto BreakoutGame_42
-label BreakoutGame_43
-label BreakoutGame_42
+    goto BreakoutGame_54
+label BreakoutGame_55
+label BreakoutGame_54
+    push constant 0
+    return
+function BreakoutGame.applyModifier 1
+    push argument 0
+    pop pointer 0
+    push this 20
+    call Modifier.getType 1
+    pop local 0
+    push local 0
+    push constant 1
+    eq
+    not
+    if-goto BreakoutGame_61
+    push this 1
+    push this 1
+    call Paddle.getWidth 1
+    push constant 2
+    call Math.divide 2
+    call Paddle.setWidth 2
+    pop temp 0
+    goto BreakoutGame_60
+label BreakoutGame_61
+label BreakoutGame_60
+    push local 0
+    push constant 2
+    eq
+    not
+    if-goto BreakoutGame_63
+    push this 0
+    push constant 3
+    call Ball.increaseSpeed 2
+    pop temp 0
+    goto BreakoutGame_62
+label BreakoutGame_63
+label BreakoutGame_62
+    push local 0
+    push constant 3
+    eq
+    not
+    if-goto BreakoutGame_65
+    push constant 1
+    neg
+    pop this 21
+    goto BreakoutGame_64
+label BreakoutGame_65
+label BreakoutGame_64
+    push local 0
+    push constant 4
+    eq
+    not
+    if-goto BreakoutGame_67
+    push this 1
+    push this 1
+    call Paddle.getWidth 1
+    push constant 2
+    call Math.multiply 2
+    call Paddle.setWidth 2
+    pop temp 0
+    goto BreakoutGame_66
+label BreakoutGame_67
+label BreakoutGame_66
+    push local 0
+    push constant 5
+    eq
+    not
+    if-goto BreakoutGame_69
+    push this 0
+    push constant 2
+    neg
+    call Ball.increaseSpeed 2
+    pop temp 0
+    goto BreakoutGame_68
+label BreakoutGame_69
+label BreakoutGame_68
+    push local 0
+    push constant 6
+    eq
+    not
+    if-goto BreakoutGame_71
+    push constant 1
+    neg
+    pop this 22
+    goto BreakoutGame_70
+label BreakoutGame_71
+label BreakoutGame_70
+    push constant 0
+    return
+function BreakoutGame.revertModifier 1
+    push argument 0
+    pop pointer 0
+    push this 20
+    call Modifier.getType 1
+    pop local 0
+    push local 0
+    push constant 1
+    eq
+    not
+    if-goto BreakoutGame_73
+    push this 1
+    push this 1
+    call Paddle.getWidth 1
+    push constant 2
+    call Math.multiply 2
+    call Paddle.setWidth 2
+    pop temp 0
+    goto BreakoutGame_72
+label BreakoutGame_73
+label BreakoutGame_72
+    push local 0
+    push constant 2
+    eq
+    not
+    if-goto BreakoutGame_75
+    push this 0
+    push constant 3
+    neg
+    call Ball.increaseSpeed 2
+    pop temp 0
+    goto BreakoutGame_74
+label BreakoutGame_75
+label BreakoutGame_74
+    push local 0
+    push constant 3
+    eq
+    not
+    if-goto BreakoutGame_77
+    push constant 0
+    pop this 21
+    goto BreakoutGame_76
+label BreakoutGame_77
+label BreakoutGame_76
+    push local 0
+    push constant 4
+    eq
+    not
+    if-goto BreakoutGame_79
+    push this 1
+    push this 1
+    call Paddle.getWidth 1
+    push constant 2
+    call Math.divide 2
+    call Paddle.setWidth 2
+    pop temp 0
+    goto BreakoutGame_78
+label BreakoutGame_79
+label BreakoutGame_78
+    push local 0
+    push constant 5
+    eq
+    not
+    if-goto BreakoutGame_81
+    push this 0
+    push constant 2
+    call Ball.increaseSpeed 2
+    pop temp 0
+    goto BreakoutGame_80
+label BreakoutGame_81
+label BreakoutGame_80
+    push local 0
+    push constant 6
+    eq
+    not
+    if-goto BreakoutGame_83
+    push constant 0
+    pop this 22
+    goto BreakoutGame_82
+label BreakoutGame_83
+label BreakoutGame_82
     push constant 0
     return
 function BreakoutGame.moveModifier 1
@@ -925,7 +1167,7 @@ function BreakoutGame.moveModifier 1
     pop local 0
     push local 0
     not
-    if-goto BreakoutGame_49
+    if-goto BreakoutGame_85
     push this 20
     call Modifier.hide 1
     pop temp 0
@@ -939,7 +1181,7 @@ function BreakoutGame.moveModifier 1
     sub
     lt
     not
-    if-goto BreakoutGame_51
+    if-goto BreakoutGame_87
     push this 20
     push this 20
     call Modifier.getY 1
@@ -987,7 +1229,7 @@ function BreakoutGame.moveModifier 1
     or
     and
     not
-    if-goto BreakoutGame_53
+    if-goto BreakoutGame_89
     push this 20
     call Modifier.activate 1
     pop temp 0
@@ -997,11 +1239,14 @@ function BreakoutGame.moveModifier 1
     push this 1
     call Paddle.show 1
     pop temp 0
-    goto BreakoutGame_52
-label BreakoutGame_53
-label BreakoutGame_52
-    goto BreakoutGame_50
-label BreakoutGame_51
+    push pointer 0
+    call BreakoutGame.applyModifier 1
+    pop temp 0
+    goto BreakoutGame_88
+label BreakoutGame_89
+label BreakoutGame_88
+    goto BreakoutGame_86
+label BreakoutGame_87
     push this 20
     push constant 0
     call Modifier.setOnScreen 2
@@ -1009,9 +1254,31 @@ label BreakoutGame_51
     push this 20
     call Modifier.hide 1
     pop temp 0
-label BreakoutGame_50
-    goto BreakoutGame_48
-label BreakoutGame_49
-label BreakoutGame_48
+label BreakoutGame_86
+    goto BreakoutGame_84
+label BreakoutGame_85
+label BreakoutGame_84
+    push this 20
+    call Modifier.isActive 1
+    not
+    if-goto BreakoutGame_91
+    push this 20
+    call Modifier.tickTimer 1
+    pop temp 0
+    push this 20
+    call Modifier.getTimer 1
+    push constant 0
+    eq
+    not
+    if-goto BreakoutGame_93
+    push pointer 0
+    call BreakoutGame.revertModifier 1
+    pop temp 0
+    goto BreakoutGame_92
+label BreakoutGame_93
+label BreakoutGame_92
+    goto BreakoutGame_90
+label BreakoutGame_91
+label BreakoutGame_90
     push constant 0
     return

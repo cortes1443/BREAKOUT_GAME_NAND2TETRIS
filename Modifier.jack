@@ -88,4 +88,8 @@ class Modifier{
     method boolean isOnScreen(){
         return onScreen;
     }
+
+    method int getTimer(){
+        return timer;
+    }
 }

@@ -98,7 +98,12 @@ class Ball {
 
     method void increaseSpeed(int increment) {
         let speed = speed + increment;
+        if (speed < 1) { let speed = 1; }
         return;
+    }
+
+    method int getSpeed() {
+        return speed;
     }
 
     /**
