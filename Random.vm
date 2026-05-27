@@ -2,7 +2,7 @@ function Random.new 0
     push constant 1
     call Memory.alloc 1
     pop pointer 0
-    push constant 0
+    push constant 1
     pop this 0
     push pointer 0
     return
@@ -14,59 +14,105 @@ function Random.dispose 0
     pop temp 0
     push constant 0
     return
-function Random.range 1
+function Random.seed 0
     push argument 0
     pop pointer 0
     push argument 1
-    push argument 1
-    push constant 4096
-    call Math.divide 2
-    push constant 4096
-    call Math.multiply 2
-    sub
-    pop argument 1
-    push argument 1
     push constant 0
-    lt
+    eq
+    not
     not
     if-goto Random_1
     push argument 1
-    neg
-    pop argument 1
+    pop this 0
     goto Random_0
 label Random_1
 label Random_0
-    push argument 1
-    push constant 7
+    push constant 0
+    return
+function Random.next 0
+    push argument 0
+    pop pointer 0
+    push this 0
+    push constant 31
     call Math.multiply 2
-    push constant 13
+    push constant 997
     add
-    pop local 0
-    push local 0
+    pop this 0
+    push this 0
     push constant 0
     lt
     not
     if-goto Random_3
-    push local 0
+    push this 0
     neg
-    pop local 0
+    pop this 0
     goto Random_2
 label Random_3
 label Random_2
-    push argument 2
-    push local 0
-    push local 0
-    push argument 3
-    push argument 2
-    sub
-    push constant 1
-    add
+    push this 0
+    push this 0
+    push constant 32767
     call Math.divide 2
+    push constant 32767
+    call Math.multiply 2
+    sub
+    pop this 0
+    push this 0
+    push constant 0
+    eq
+    not
+    if-goto Random_5
+    push constant 1
+    pop this 0
+    goto Random_4
+label Random_5
+label Random_4
+    push this 0
+    return
+function Random.range 2
+    push argument 0
+    pop pointer 0
+    push this 0
+    push argument 1
+    add
+    pop this 0
+    push this 0
+    push constant 0
+    lt
+    not
+    if-goto Random_7
+    push this 0
+    neg
+    pop this 0
+    goto Random_6
+label Random_7
+label Random_6
+    push this 0
+    push constant 0
+    eq
+    not
+    if-goto Random_9
+    push constant 1
+    pop this 0
+    goto Random_8
+label Random_9
+label Random_8
+    push pointer 0
+    call Random.next 1
+    pop local 0
     push argument 3
     push argument 2
     sub
     push constant 1
     add
+    pop local 1
+    push argument 2
+    push local 0
+    push local 0
+    push local 1
+    call Math.divide 2
+    push local 1
     call Math.multiply 2
     sub
     add

@@ -37,10 +37,12 @@ class BreakoutGame {
     // Bugfix o646i349o6h: count at most 2 blocks of piercing
     field int piercingHits;
 
-
+    // ---------- new feature that prints modifier on the screen -------
+    field String modifierLabelClear;
 
     /* Constructs a new Breakout game. */
     constructor BreakoutGame new() {
+
         var int i, j;
         var Array rowBricks;
 
@@ -76,6 +78,7 @@ class BreakoutGame {
             }
             let i = i + 1;
         }
+
         do Screen.drawRectangle(0, 15, 511, 27);
         do Screen.drawRectangle(0, 28 , 12, 255);
         do Screen.drawRectangle(499, 28 , 511, 255);
@@ -90,6 +93,7 @@ class BreakoutGame {
 
         do Output.moveCursor(0,0);
         do Output.printString("Score: 0");
+
         do Output.moveCursor(0,28);
         do Output.printString("BREAKOUT!");
         do Output.moveCursor(0,44);
@@ -102,11 +106,26 @@ class BreakoutGame {
         do twoSpaces.appendChar(32);
         // ----------------------------------------
 
-        return this;
-
         // ---------------- Bugfix o646i349o6h -------------
         let piercingHits = 0;
         // -------------------------------------------------
+
+        // pre-allocate clear string for modifier label (longest label is 12 chars)
+        let modifierLabelClear = String.new(12);
+        do modifierLabelClear.appendChar(32);
+        do modifierLabelClear.appendChar(32);
+        do modifierLabelClear.appendChar(32);
+        do modifierLabelClear.appendChar(32);
+        do modifierLabelClear.appendChar(32);
+        do modifierLabelClear.appendChar(32);
+        do modifierLabelClear.appendChar(32);
+        do modifierLabelClear.appendChar(32);
+        do modifierLabelClear.appendChar(32);
+        do modifierLabelClear.appendChar(32);
+        do modifierLabelClear.appendChar(32);
+        do modifierLabelClear.appendChar(32);
+
+        return this;
     }
 
     /** Deallocates the object's memory. */
@@ -119,6 +138,7 @@ class BreakoutGame {
         // --------------- Bugfix abc935kf ---------------
         do twoSpaces.dispose();
         // -----------------------------------------------
+        do modifierLabelClear.dispose();
         do Memory.deAlloc(this);
         return;
     }
@@ -371,6 +391,7 @@ class BreakoutGame {
         if (t = 4) { do paddle.setWidth(paddle.getWidth() * 2); }
         if (t = 5) { do ball.increaseSpeed(-2); }
         if (t = 6) { let piercing = true; let piercingHits = 0; }
+        do drawModifierLabel();
         return;
     }
 
@@ -383,6 +404,7 @@ class BreakoutGame {
         if (t = 4) { do paddle.setWidth(paddle.getWidth() / 2); }
         if (t = 5) { do ball.increaseSpeed(2); }
         if (t = 6) { let piercing = false; let piercingHits = 0; }
+        do clearModifierLabel();
         return;
     }
 
@@ -419,4 +441,28 @@ class BreakoutGame {
         }
         return;
     }
+
+    /** Prints the active modifier label at row 0, col 14. */
+    method void drawModifierLabel() {
+        var int t;
+        let t = modifier.getType();
+        do Output.moveCursor(0, 14);
+        do Output.printString(modifierLabelClear);
+        do Output.moveCursor(0, 14);
+        if (t = 1) { do Output.printString("(-) SMALL");    }
+        if (t = 2) { do Output.printString("(-) QUICK");    }
+        if (t = 3) { do Output.printString("(-) INVERTED"); }
+        if (t = 4) { do Output.printString("(+) BIG");      }
+        if (t = 5) { do Output.printString("(+) SLOW");     }
+        if (t = 6) { do Output.printString("(+) PIERCING"); }
+        return;
+    }
+
+    /** Clears the modifier label field. */
+    method void clearModifierLabel() {
+        do Output.moveCursor(0, 14);
+        do Output.printString(modifierLabelClear);
+        return;
+    }
+
 }

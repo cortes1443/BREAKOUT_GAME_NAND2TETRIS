@@ -1,5 +1,5 @@
 function BreakoutGame.new 3
-    push constant 27
+    push constant 28
     call Memory.alloc 1
     pop pointer 0
     call Screen.clearScreen 0
@@ -283,10 +283,61 @@ label BreakoutGame_1
     push constant 32
     call String.appendChar 2
     pop temp 0
-    push pointer 0
-    return
     push constant 0
     pop this 26
+    push constant 12
+    call String.new 1
+    pop this 27
+    push this 27
+    push constant 32
+    call String.appendChar 2
+    pop temp 0
+    push this 27
+    push constant 32
+    call String.appendChar 2
+    pop temp 0
+    push this 27
+    push constant 32
+    call String.appendChar 2
+    pop temp 0
+    push this 27
+    push constant 32
+    call String.appendChar 2
+    pop temp 0
+    push this 27
+    push constant 32
+    call String.appendChar 2
+    pop temp 0
+    push this 27
+    push constant 32
+    call String.appendChar 2
+    pop temp 0
+    push this 27
+    push constant 32
+    call String.appendChar 2
+    pop temp 0
+    push this 27
+    push constant 32
+    call String.appendChar 2
+    pop temp 0
+    push this 27
+    push constant 32
+    call String.appendChar 2
+    pop temp 0
+    push this 27
+    push constant 32
+    call String.appendChar 2
+    pop temp 0
+    push this 27
+    push constant 32
+    call String.appendChar 2
+    pop temp 0
+    push this 27
+    push constant 32
+    call String.appendChar 2
+    pop temp 0
+    push pointer 0
+    return
 function BreakoutGame.dispose 0
     push argument 0
     pop pointer 0
@@ -306,6 +357,9 @@ function BreakoutGame.dispose 0
     call Modifier.dispose 1
     pop temp 0
     push this 25
+    call String.dispose 1
+    pop temp 0
+    push this 27
     call String.dispose 1
     pop temp 0
     push pointer 0
@@ -1215,6 +1269,9 @@ label BreakoutGame_78
     goto BreakoutGame_80
 label BreakoutGame_81
 label BreakoutGame_80
+    push pointer 0
+    call BreakoutGame.drawModifierLabel 1
+    pop temp 0
     push constant 0
     return
 function BreakoutGame.revertModifier 1
@@ -1300,6 +1357,9 @@ label BreakoutGame_90
     goto BreakoutGame_92
 label BreakoutGame_93
 label BreakoutGame_92
+    push pointer 0
+    call BreakoutGame.clearModifierLabel 1
+    pop temp 0
     push constant 0
     return
 function BreakoutGame.moveModifier 1
@@ -1436,5 +1496,222 @@ label BreakoutGame_102
     goto BreakoutGame_100
 label BreakoutGame_101
 label BreakoutGame_100
+    push constant 0
+    return
+function BreakoutGame.drawModifierLabel 1
+    push argument 0
+    pop pointer 0
+    push this 22
+    call Modifier.getType 1
+    pop local 0
+    push constant 0
+    push constant 14
+    call Output.moveCursor 2
+    pop temp 0
+    push this 27
+    call Output.printString 1
+    pop temp 0
+    push constant 0
+    push constant 14
+    call Output.moveCursor 2
+    pop temp 0
+    push local 0
+    push constant 1
+    eq
+    not
+    if-goto BreakoutGame_107
+    push constant 9
+    call String.new 1
+    push constant 40
+    call String.appendChar 2
+    push constant 45
+    call String.appendChar 2
+    push constant 41
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    push constant 83
+    call String.appendChar 2
+    push constant 77
+    call String.appendChar 2
+    push constant 65
+    call String.appendChar 2
+    push constant 76
+    call String.appendChar 2
+    push constant 76
+    call String.appendChar 2
+    call Output.printString 1
+    pop temp 0
+    goto BreakoutGame_106
+label BreakoutGame_107
+label BreakoutGame_106
+    push local 0
+    push constant 2
+    eq
+    not
+    if-goto BreakoutGame_109
+    push constant 9
+    call String.new 1
+    push constant 40
+    call String.appendChar 2
+    push constant 45
+    call String.appendChar 2
+    push constant 41
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    push constant 81
+    call String.appendChar 2
+    push constant 85
+    call String.appendChar 2
+    push constant 73
+    call String.appendChar 2
+    push constant 67
+    call String.appendChar 2
+    push constant 75
+    call String.appendChar 2
+    call Output.printString 1
+    pop temp 0
+    goto BreakoutGame_108
+label BreakoutGame_109
+label BreakoutGame_108
+    push local 0
+    push constant 3
+    eq
+    not
+    if-goto BreakoutGame_111
+    push constant 12
+    call String.new 1
+    push constant 40
+    call String.appendChar 2
+    push constant 45
+    call String.appendChar 2
+    push constant 41
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    push constant 73
+    call String.appendChar 2
+    push constant 78
+    call String.appendChar 2
+    push constant 86
+    call String.appendChar 2
+    push constant 69
+    call String.appendChar 2
+    push constant 82
+    call String.appendChar 2
+    push constant 84
+    call String.appendChar 2
+    push constant 69
+    call String.appendChar 2
+    push constant 68
+    call String.appendChar 2
+    call Output.printString 1
+    pop temp 0
+    goto BreakoutGame_110
+label BreakoutGame_111
+label BreakoutGame_110
+    push local 0
+    push constant 4
+    eq
+    not
+    if-goto BreakoutGame_113
+    push constant 7
+    call String.new 1
+    push constant 40
+    call String.appendChar 2
+    push constant 43
+    call String.appendChar 2
+    push constant 41
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    push constant 66
+    call String.appendChar 2
+    push constant 73
+    call String.appendChar 2
+    push constant 71
+    call String.appendChar 2
+    call Output.printString 1
+    pop temp 0
+    goto BreakoutGame_112
+label BreakoutGame_113
+label BreakoutGame_112
+    push local 0
+    push constant 5
+    eq
+    not
+    if-goto BreakoutGame_115
+    push constant 8
+    call String.new 1
+    push constant 40
+    call String.appendChar 2
+    push constant 43
+    call String.appendChar 2
+    push constant 41
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    push constant 83
+    call String.appendChar 2
+    push constant 76
+    call String.appendChar 2
+    push constant 79
+    call String.appendChar 2
+    push constant 87
+    call String.appendChar 2
+    call Output.printString 1
+    pop temp 0
+    goto BreakoutGame_114
+label BreakoutGame_115
+label BreakoutGame_114
+    push local 0
+    push constant 6
+    eq
+    not
+    if-goto BreakoutGame_117
+    push constant 12
+    call String.new 1
+    push constant 40
+    call String.appendChar 2
+    push constant 43
+    call String.appendChar 2
+    push constant 41
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    push constant 80
+    call String.appendChar 2
+    push constant 73
+    call String.appendChar 2
+    push constant 69
+    call String.appendChar 2
+    push constant 82
+    call String.appendChar 2
+    push constant 67
+    call String.appendChar 2
+    push constant 73
+    call String.appendChar 2
+    push constant 78
+    call String.appendChar 2
+    push constant 71
+    call String.appendChar 2
+    call Output.printString 1
+    pop temp 0
+    goto BreakoutGame_116
+label BreakoutGame_117
+label BreakoutGame_116
+    push constant 0
+    return
+function BreakoutGame.clearModifierLabel 0
+    push argument 0
+    pop pointer 0
+    push constant 0
+    push constant 14
+    call Output.moveCursor 2
+    pop temp 0
+    push this 27
+    call Output.printString 1
+    pop temp 0
     push constant 0
     return

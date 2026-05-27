@@ -1,8 +1,8 @@
-class Random{
+class Random {
     field int value;
 
-    constructor Random new(){
-        let value = 0;
+    constructor Random new() {
+        let value = 1;
         return this;
     }
 
@@ -10,14 +10,33 @@ class Random{
         do Memory.deAlloc(this);
         return;
     }
-    
-    method int range(int seed, int a, int b){
-        var int raw;
-        let seed = seed - ((seed / 4096) * 4096);
-        if (seed < 0) { let seed = -seed; }
-        let raw = ((seed * 7) + 13);
-        if (raw < 0) { let raw = -raw; }
-        return a + (raw - ((raw / (b - a + 1)) * (b - a + 1)));
+
+    method void seed(int s) {
+        if (~(s = 0)) {
+            let value = s;
+        }
+        return;
     }
 
+    method int next() {
+        // LCG: multiplier=214013, increment=2531011, but adapted for 16-bit Jack
+        // Usamos valores más pequeños que no desborden
+        let value = (value * 31) + 997;
+        // Mantener positivo y acotado
+        if (value < 0) { let value = -(value); }
+        let value = value - ((value / 32767) * 32767);
+        if (value = 0) { let value = 1; }
+        return value;
+    }
+
+    method int range(int seed, int a, int b) {
+        var int raw;
+        var int span;
+        let value = value + seed;
+        if (value < 0) { let value = -value; }
+        if (value = 0) { let value = 1; }
+        let raw = next();
+        let span = (b - a) + 1;
+        return a + (raw - ((raw / span) * span));
+    }
 }
