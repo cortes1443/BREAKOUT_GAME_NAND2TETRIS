@@ -14,7 +14,7 @@ function Modifier.new 0
     pop this 1
     push argument 2
     pop this 2
-    push constant 10
+    push constant 3
     pop this 3
     push constant 300
     pop this 4

@@ -138,6 +138,7 @@ class BreakoutGame {
             do Output.printString("Final Score: ");
             do Output.moveCursor(13,38);
             do Output.printInt(score);
+            do Sys.wait(2000);
         }
 
         if ( score = (numXBricks * numYBricks) ) {
@@ -253,11 +254,12 @@ class BreakoutGame {
             do modifier.hide();
             
             if((modifier.getY() < (255 -  modifier.getSize() - 1))){
-                do modifier.setY(modifier.getY() + 3);
+                do modifier.setY(modifier.getY() + 2);
                 do modifier.draw();
-                if((paddle.getLeft() < (modifier.getX() + modifier.getSize())) & (paddle.getRight() > modifier.getX()) & (((255 - paddleHeight) < (modifier.getY() + modifier.getSize())))){
+                if((paddle.getLeft() < (modifier.getX() + modifier.getSize())) & (paddle.getRight() > modifier.getX()) & (((255 - paddleHeight -1) < (modifier.getY() + modifier.getSize())) | ((255 - paddleHeight) = (modifier.getY() + modifier.getSize())))){
                     do modifier.activate();
                     do modifier.hide();
+                    do paddle.show();
                 }
             }
             else {

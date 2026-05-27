@@ -1,4 +1,9 @@
 function Main.main 1
+label Main_0
+    push constant 1
+    neg
+    not
+    if-goto Main_1
     call BreakoutGame.new 0
     pop local 0
     push local 0
@@ -7,5 +12,7 @@ function Main.main 1
     push local 0
     call BreakoutGame.dispose 1
     pop temp 0
+    goto Main_0
+label Main_1
     push constant 0
     return

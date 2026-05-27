@@ -486,6 +486,9 @@ label BreakoutGame_5
     push this 15
     call Output.printInt 1
     pop temp 0
+    push constant 2000
+    call Sys.wait 1
+    pop temp 0
     goto BreakoutGame_18
 label BreakoutGame_19
 label BreakoutGame_18
@@ -940,7 +943,7 @@ function BreakoutGame.moveModifier 1
     push this 20
     push this 20
     call Modifier.getY 1
-    push constant 3
+    push constant 2
     add
     call Modifier.setY 2
     pop temp 0
@@ -964,12 +967,24 @@ function BreakoutGame.moveModifier 1
     push constant 255
     push this 3
     sub
+    push constant 1
+    sub
     push this 20
     call Modifier.getY 1
     push this 20
     call Modifier.getSize 1
     add
     lt
+    push constant 255
+    push this 3
+    sub
+    push this 20
+    call Modifier.getY 1
+    push this 20
+    call Modifier.getSize 1
+    add
+    eq
+    or
     and
     not
     if-goto BreakoutGame_53
@@ -978,6 +993,9 @@ function BreakoutGame.moveModifier 1
     pop temp 0
     push this 20
     call Modifier.hide 1
+    pop temp 0
+    push this 1
+    call Paddle.show 1
     pop temp 0
     goto BreakoutGame_52
 label BreakoutGame_53
