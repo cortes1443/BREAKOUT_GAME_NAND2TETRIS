@@ -226,15 +226,46 @@ class BreakoutGame {
         var Array rowBricks;
         var Brick brick;
 
+        // ------------------ Bugfix id ejritjeritoi ------------
+        var boolean bouncedThisFrame; // awaits 1 frame if a ball is touching more than 2 bricks to avoid twicing or multiplying the speed bbecause of the simultaneous collision
+        // ------------------------------------------------------
+
         do ball.hide();
+        let wall = 0; // DONT DELETE THIS
 
         let pos = ball.move();
 
         let x = pos[0];
         let y = pos[1];
 
+        let bouncedThisFrame = false; // bugfix id ejritjeritoi
+
+
+
+        // first check wall collisions AND clamp position
+        if (~(x > leftWall)) { // avoid ball from clipping with left wall
+            let wall = 1;
+            let x = leftWall;
+            do ball.setX(x);
+        }
+        if (~(x < rightWall)) { // avoid ball from clipping with right wall
+            let wall = 2;
+            let x = rightWall;
+            do ball.setX(x);
+        }
+        if (~(y > topWall)) { // avoid ball from clipping with top wall
+            let wall = 3;
+            let y = topWall;
+            do ball.setY(y);
+        }
+        if (~(y < bottomWall)) { // avoid ball from clipping with bottom 
+            let wall = 4;
+            let y = bottomWall;
+            do ball.setY(y);
+        }
+
         // check paddle collision right away
-        if ((wall > 0) & (~(wall = lastWall))) {
+        if (wall > 0) {
             if (wall = 4) {
                 let exit = ((paddle.getLeft() > ball.getRight()) | (paddle.getRight() < ball.getLeft()));
                 if (exit) { do ball.hide(); }
@@ -263,7 +294,13 @@ class BreakoutGame {
                         }
 
                         if ((~piercing) | (piercingHits > 0)) {
-                            do ball.bounce(face);
+
+                            // ----- bugfix ejritjeritoi ----
+                            if (~bouncedThisFrame) {
+                                do ball.bounce(face);
+                                let bouncedThisFrame = true;
+                            }
+                            // ------------
 
                             if ((face = 1) | (face = 2)) {
                                 do ball.forceDYDown();
@@ -294,8 +331,8 @@ class BreakoutGame {
                         do Output.moveCursor(0,62);
                         do Output.printInt((numXBricks * numYBricks) - score);
 
-                        let seed = ((score + paddle.getLeft() + paddle.getRight() + ball.getLeft() + ball.getTop()) * 11);
-                        let generateModifier = 3; //  random.range(seed, 1, 3); // 1/3 of prob to generate a modifier DEBUG
+                        let seed = ((score * 3) + (paddle.getLeft() * 5) + (ball.getLeft() * 11) + (ball.getTop() * 17) + (paddle.getRight() * 7));
+                        let generateModifier = random.range(seed, 1, 2); // 1/2 of prob to generate a modifier DEBUG
                         
                         /* Bugfix id kgh54o0h5: ONLY ONE MODIFIER AT THE TIME
                         if (generateModifier = 3) {
@@ -307,7 +344,7 @@ class BreakoutGame {
                         }
                         */
                         // FIXED:
-                        if (generateModifier = 3) {
+                        if (generateModifier = 2) { // if probability >= 50%
                             if (~modifier.isActive() & ~modifier.isOnScreen()) {
                                 do modifier.dispose();
                                 let modifier = Modifier.new(seed, ball.getLeft(), ball.getBottom());
@@ -319,28 +356,6 @@ class BreakoutGame {
                 let j = j + 1;
             }
             let i = i + 1;
-        } 
-    
-        // lastly, check the borders
-        if (~(x > leftWall)) { // avoid ball from clipping with left wall
-            let wall = 1;
-            let x = leftWall;
-            do ball.setX(x);
-        }
-        if (~(x < rightWall)) { // avoid ball from clipping with right wall
-            let wall = 2;
-            let x = rightWall;
-            do ball.setX(x);
-        }
-        if (~(y > topWall)) { // avoid ball from clipping with top wall
-            let wall = 3;
-            let y = topWall;
-            do ball.setY(y);
-        }
-        if (~(y < bottomWall)) { // avoid ball from clipping with bottom 
-            let wall = 4;
-            let y = bottomWall;
-            do ball.setY(y);
         }
 
         do ball.show();

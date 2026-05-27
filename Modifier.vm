@@ -4,7 +4,11 @@ function Modifier.new 0
     pop pointer 0
     call Random.new 0
     pop this 7
+    push this 7
+    push argument 0
+    push constant 1
     push constant 6
+    call Random.range 4
     pop this 0
     push argument 1
     pop this 1
