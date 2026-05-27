@@ -199,7 +199,7 @@ class BreakoutGame {
                 do paddle.move();
                 do moveBall();
                 do moveModifier();
-                do Sys.wait(50);
+                do Sys.wait(10); // DEBUG original was 50
             }
         }
 
@@ -229,7 +229,7 @@ class BreakoutGame {
             do Output.printString("Final Score: ");
             do Output.moveCursor(15,38);
             do Output.printInt(score);
-            do Sys.wait(500);
+            do Sys.wait(2000);
         }
         return;
     }
@@ -292,6 +292,7 @@ class BreakoutGame {
             }
             do ball.bounce(wall);
             let lastWall = wall;
+            let bouncedThisFrame = false;
         }
 
         // iterate through all bricks
@@ -311,6 +312,37 @@ class BreakoutGame {
                         if ((piercingHits < 2) & (ball.getDY() < 0)) {
                             do brick.breakBrick();
                             let score = score + 1;
+
+                            do Output.moveCursor(0, 7);
+                            do Output.printInt(score);
+                            do Output.moveCursor(0,62);
+                            // do Output.printString("  ");
+                            // --------------- Bugfix abc935kf ---------------
+                            do Output.printString(twoSpaces);
+                            // ----------------------------------------
+
+                            do Output.moveCursor(0,62);
+                            do Output.printInt((numXBricks * numYBricks) - score);
+
+                            let seed = ((score * 3) + (paddle.getLeft() * 5) + (ball.getLeft() * 11) + (ball.getTop() * 17) + (paddle.getRight() * 7));
+                            let generateModifier = random.range(seed, 1, 2); // 1/2 of prob to generate a modifier DEBUG
+                            
+                            /* Bugfix id kgh54o0h5: ONLY ONE MODIFIER AT THE TIME
+                            if (generateModifier = 3) {
+                                if (modifier.isActive()) {
+                                    do revertModifier();
+                                }
+                                do modifier.dispose();
+                                let modifier = Modifier.new(seed, ball.getLeft(), ball.getBottom());
+                            }
+                            */
+                            // FIXED:
+                            if (generateModifier = 2) { // if probability >= 50%
+                                if (~modifier.isActive() & ~modifier.isOnScreen()) {
+                                    do modifier.dispose();
+                                    let modifier = Modifier.new(seed, ball.getLeft(), ball.getBottom());
+                                }
+                            }
                         }
 
                         if ((~piercing) | (piercingHits > 0)) {
@@ -340,36 +372,6 @@ class BreakoutGame {
                             do ball.increaseSpeed(1);
                         }
                         */
-                        do Output.moveCursor(0, 7);
-                        do Output.printInt(score);
-                        do Output.moveCursor(0,62);
-                        // do Output.printString("  ");
-                        // --------------- Bugfix abc935kf ---------------
-                        do Output.printString(twoSpaces);
-                        // ----------------------------------------
-
-                        do Output.moveCursor(0,62);
-                        do Output.printInt((numXBricks * numYBricks) - score);
-
-                        let seed = ((score * 3) + (paddle.getLeft() * 5) + (ball.getLeft() * 11) + (ball.getTop() * 17) + (paddle.getRight() * 7));
-                        let generateModifier = random.range(seed, 1, 2); // 1/2 of prob to generate a modifier DEBUG
-                        
-                        /* Bugfix id kgh54o0h5: ONLY ONE MODIFIER AT THE TIME
-                        if (generateModifier = 3) {
-                            if (modifier.isActive()) {
-                                do revertModifier();
-                            }
-                            do modifier.dispose();
-                            let modifier = Modifier.new(seed, ball.getLeft(), ball.getBottom());
-                        }
-                        */
-                        // FIXED:
-                        if (generateModifier = 2) { // if probability >= 50%
-                            if (~modifier.isActive() & ~modifier.isOnScreen()) {
-                                do modifier.dispose();
-                                let modifier = Modifier.new(seed, ball.getLeft(), ball.getBottom());
-                            }
-                        }
 
                     }
                 }
@@ -388,7 +390,12 @@ class BreakoutGame {
         if (t = 1) { do paddle.setWidth(paddle.getWidth() / 2); }
         if (t = 2) { do ball.increaseSpeed(2); }
         if (t = 3) { let switchKeys = true; }
-        if (t = 4) { do paddle.setWidth(paddle.getWidth() * 2); }
+        if (t = 4) {
+            do paddle.setWidth(paddle.getWidth() * 2);
+            if (paddle.getRight() > 499) {
+                do paddle.setX(499 - paddle.getWidth());
+            }
+        }
         if (t = 5) { do ball.increaseSpeed(-2); }
         if (t = 6) { let piercing = true; let piercingHits = 0; }
         do drawModifierLabel();
@@ -449,12 +456,12 @@ class BreakoutGame {
         do Output.moveCursor(0, 14);
         do Output.printString(modifierLabelClear);
         do Output.moveCursor(0, 14);
-        if (t = 1) { do Output.printString("(-) SMALL");    }
-        if (t = 2) { do Output.printString("(-) QUICK");    }
-        if (t = 3) { do Output.printString("(-) INVERTED"); }
-        if (t = 4) { do Output.printString("(+) BIG");      }
-        if (t = 5) { do Output.printString("(+) SLOW");     }
-        if (t = 6) { do Output.printString("(+) PIERCING"); }
+        if (t = 1) { do Output.printString(":( SMALL");    }
+        if (t = 2) { do Output.printString(":( QUICK");    }
+        if (t = 3) { do Output.printString(":( INVERTED"); }
+        if (t = 4) { do Output.printString(":) BIG");      }
+        if (t = 5) { do Output.printString(":) SLOW");     }
+        if (t = 6) { do Output.printString(":) PIERCING"); }
         return;
     }
 

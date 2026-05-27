@@ -74,6 +74,12 @@
         return width;
     }
 
+    // another method YAY
+    method void setX(int Ax) {
+        let x = Ax;
+        return;
+    }
+
     /** Sets the paddle's width, redrawing it. */
     method void setWidth(int newWidth) {
         do hide();
